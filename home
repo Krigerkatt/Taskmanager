@@ -1,0 +1,148 @@
+<?php
+$pageTitle = 'Мои задачи';
+require_once 'header.php';
+require_once 'data.php';
+
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit;
+}
+
+$userId = $_SESSION['user_id'];
+$tasks = [];
+$error = '';
+
+try {
+    $pdo = new PDO($dsn, $db_user, $db_password, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+    ]);
+    
+    $stmt = $pdo->prepare("SELECT id, text, complite FROM tasks WHERE user_id = ? ORDER BY id DESC");
+    $stmt->execute([$userId]);
+    $tasks = $stmt->fetchAll();
+    
+} catch (PDOException $e) {
+    $error = 'Ошибка загрузки задач';
+}
+
+$active = array_filter($tasks, fn($t) => !$t['complite']);
+$done = array_filter($tasks, fn($t) => $t['complite']);
+?>
+
+<?php if ($error): ?>
+  <p class="error"><?= htmlspecialchars($error) ?></p>
+<?php endif; ?>
+
+<section class="list_tasks">
+  <h2>Активные (<?= count($active) ?>)</h2>
+  <ul id="activeList">
+    <?php foreach ($active as $task): ?>
+      <li data-id="<?= $task['id'] ?>">
+        <span><?= htmlspecialchars($task['text']) ?></span>
+        <div class="task-actions">
+          <button class="btn-edit" 
+                  data-id="<?= $task['id'] ?>" 
+                  data-text="<?= htmlspecialchars($task['text']) ?>">✎</button>
+          <form method="POST" action="form.php" style="display:inline;">
+            <input type="hidden" name="action" value="toggle">
+            <input type="hidden" name="id" value="<?= $task['id'] ?>">
+            <button type="submit" class="btn-move" title="Выполнено">✓</button>
+          </form>
+          <form method="POST" action="form.php" style="display:inline;">
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="id" value="<?= $task['id'] ?>">
+            <button type="submit" class="btn-delete" onclick="return confirm('Удалить задачу?')">✕</button>
+          </form>
+        </div>
+      </li>
+    <?php endforeach; ?>
+  </ul>
+  <div class="buttons">
+    <button id="addActiveBtn" type="button">Добавить</button>
+  </div>
+</section>
+
+<section class="list_tasks">
+  <h2>Выполнены (<?= count($done) ?>)</h2>
+  <ul id="doneList">
+    <?php foreach ($done as $task): ?>
+      <li data-id="<?= $task['id'] ?>" class="completed">
+        <span><?= htmlspecialchars($task['text']) ?></span>
+        <div class="task-actions">
+          <button class="btn-edit" 
+                  data-id="<?= $task['id'] ?>" 
+                  data-text="<?= htmlspecialchars($task['text']) ?>">✎</button>
+          <form method="POST" action="form.php" style="display:inline;">
+            <input type="hidden" name="action" value="toggle">
+            <input type="hidden" name="id" value="<?= $task['id'] ?>">
+            <button type="submit" class="btn-move" title="Вернуть в активные">↺</button>
+          </form>
+          <form method="POST" action="form.php" style="display:inline;">
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="id" value="<?= $task['id'] ?>">
+            <button type="submit" class="btn-delete" onclick="return confirm('Удалить задачу?')">✕</button>
+          </form>
+        </div>
+      </li>
+    <?php endforeach; ?>
+  </ul>
+</section>
+
+<dialog id="modal">
+  <h2 id="modalTitle">Новая задача</h2>
+  <form method="POST" action="form.php">
+    <input type="hidden" name="action" id="modalAction" value="add">
+    <input type="hidden" name="id" id="modalId">
+    
+    <textarea name="text" id="taskTextarea" required placeholder="Текст задачи..."></textarea>
+    
+    <div class="buttons">
+      <button type="submit">Сохранить</button>
+      <button type="button" id="cancelModalBtn">Отмена</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const modal = document.getElementById('modal');
+  const cancelBtn = document.getElementById('cancelModalBtn');
+  const addBtn = document.getElementById('addActiveBtn');
+  const editBtns = document.querySelectorAll('.btn-edit');
+  
+  if (addBtn) {
+    addBtn.addEventListener('click', function() {
+      document.getElementById('modalAction').value = 'add';
+      document.getElementById('modalId').value = '';
+      document.getElementById('taskTextarea').value = '';
+      document.getElementById('modalTitle').textContent = 'Новая задача';
+      modal.showModal();
+    });
+  }
+  
+  editBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.getElementById('modalAction').value = 'edit';
+      document.getElementById('modalId').value = this.dataset.id;
+      document.getElementById('taskTextarea').value = this.dataset.text;
+      document.getElementById('modalTitle').textContent = 'Редактировать задачу';
+      modal.showModal();
+    });
+  });
+  
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', function() {
+      modal.close();
+    });
+  }
+  
+  if (modal) {
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        modal.close();
+      }
+    });
+  }
+});
+</script>
