@@ -87,13 +87,11 @@ a:hover {
 .btn-logout {
   background: #dc3545;
   color: #fff !important;
-  transition: all 0.2s;
+  transition: background 0.2s;
 }
 
 .btn-logout:hover {
-  background: #f8f9fa;
-  color: #000 !important;
-  border: 1px solid #dc3545;
+  background: #c82333;
 }
 
 .user-profile {
@@ -149,12 +147,6 @@ main {
   flex-direction: column;
   align-items: stretch;
   box-shadow: 0 4px 8px rgba(0,0,0,0.08);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.list_tasks:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.12);
 }
 
 .list_tasks h2 {
@@ -163,6 +155,48 @@ main {
   font-size: 18px;
   color: #333;
   font-weight: 600;
+}
+
+.list_tasks .column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.list_tasks .column-header h2 {
+  margin: 0;
+}
+
+.btn-clear-column {
+  padding: 6px 12px;
+  font-size: 12px;
+  background: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-clear-column:hover {
+  background: #c82333;
+}
+
+.sort-controls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.sort-controls select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+  background: #fff;
+  cursor: pointer;
 }
 
 .list_tasks ul {
@@ -185,13 +219,24 @@ main {
   margin: 8px;
   border-radius: 6px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.2s;
   max-width: calc(100% - 16px);
   overflow: hidden;
+  cursor: grab;
 }
 
 .list_tasks li:hover {
   background: #f5f5f5;
+}
+
+.list_tasks li.dragging {
+  opacity: 0.5;
+  transform: scale(1.02);
+  background: #e3e3e3;
+}
+
+.list_tasks li.drag-over {
+  border-top: 2px solid #7546f7;
 }
 
 .list_tasks li:last-child {
@@ -420,6 +465,49 @@ dialog select {
   border-radius: 6px;
   font-size: 14px;
   background: #fff;
+}
+
+dialog .priority-options {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+dialog .priority-option {
+  flex: 1;
+  text-align: center;
+  padding: 8px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 13px;
+}
+
+dialog .priority-option:hover {
+  border-color: #7546f7;
+  background: #f0f2f5;
+}
+
+dialog .priority-option.selected.low {
+  border-color: #2e7d32;
+  background: #e8f5e9;
+  color: #2e7d32;
+  font-weight: bold;
+}
+
+dialog .priority-option.selected.medium {
+  border-color: #f57f17;
+  background: #fff8e1;
+  color: #f57f17;
+  font-weight: bold;
+}
+
+dialog .priority-option.selected.high {
+  border-color: #c62828;
+  background: #ffebee;
+  color: #c62828;
+  font-weight: bold;
 }
 
 dialog .buttons {

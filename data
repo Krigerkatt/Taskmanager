@@ -11,4 +11,33 @@ $dsn = "mysql:host=$host;dbname=$db_name;charset=utf8mb4";
 
 $upload_dir = __DIR__ . '/uploads/avatars/';
 $upload_url = 'uploads/avatars/';
+
+// Функция для создания таблицы tasks с новыми полями если её нет
+function initDatabase($pdo) {
+    // Проверяем существование таблицы
+    $stmt = $pdo->query("SHOW TABLES LIKE 'tasks'");
+    if ($stmt->rowCount() === 0) {
+        // Таблицы нет, создаём с новыми полями
+        $pdo->exec("CREATE TABLE tasks (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            text TEXT NOT NULL,
+            complite TINYINT DEFAULT 0,
+            priority ENUM('low', 'medium', 'high') DEFAULT 'medium',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            INDEX(user_id),
+            INDEX(complite)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    } else {
+        // Таблица есть, проверяем наличие новых полей
+        $stmt = $pdo->query("SHOW COLUMNS FROM tasks LIKE 'priority'");
+        if ($stmt->rowCount() === 0) {
+            $pdo->exec("ALTER TABLE tasks ADD COLUMN priority ENUM('low', 'medium', 'high') DEFAULT 'medium' AFTER text");
+        }
+        $stmt = $pdo->query("SHOW COLUMNS FROM tasks LIKE 'created_at'");
+        if ($stmt->rowCount() === 0) {
+            $pdo->exec("ALTER TABLE tasks ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP AFTER priority");
+        }
+    }
+}
 ?>

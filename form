@@ -14,15 +14,19 @@ try {
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
     ]);
+    
+    // Инициализируем таблицу
+    initDatabase($pdo);
 } catch (PDOException $e) {
     die("Ошибка подключения к БД");
 }
 
 if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $text = trim($_POST['text'] ?? '');
+    $priority = $_POST['priority'] ?? 'medium';
     if ($text !== '' && $userId > 0) {
-        $stmt = $pdo->prepare("INSERT INTO tasks (user_id, text, complite) VALUES (?, ?, 0)");
-        $stmt->execute([$userId, $text]);
+        $stmt = $pdo->prepare("INSERT INTO tasks (user_id, text, complite, priority) VALUES (?, ?, 0, ?)");
+        $stmt->execute([$userId, $text, $priority]);
     }
     header('Location: index.php?page=home');
     exit;
@@ -31,9 +35,10 @@ if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 if ($action === 'edit' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = (int)($_POST['id'] ?? 0);
     $text = trim($_POST['text'] ?? '');
+    $priority = $_POST['priority'] ?? 'medium';
     if ($id > 0 && $text !== '' && $userId > 0) {
-        $stmt = $pdo->prepare("UPDATE tasks SET text = ? WHERE id = ? AND user_id = ?");
-        $stmt->execute([$text, $id, $userId]);
+        $stmt = $pdo->prepare("UPDATE tasks SET text = ?, priority = ? WHERE id = ? AND user_id = ?");
+        $stmt->execute([$text, $priority, $id, $userId]);
     }
     header('Location: index.php?page=home');
     exit;
@@ -54,6 +59,32 @@ if ($action === 'toggle') {
     if ($id > 0 && $userId > 0) {
         $stmt = $pdo->prepare("UPDATE tasks SET complite = NOT complite WHERE id = ? AND user_id = ?");
         $stmt->execute([$id, $userId]);
+    }
+    header('Location: index.php?page=home');
+    exit;
+}
+
+if ($action === 'move_task') {
+    $id = (int)($_POST['id'] ?? 0);
+    $complite = (int)($_POST['complite'] ?? 0);
+    if ($id > 0 && $userId > 0) {
+        $stmt = $pdo->prepare("UPDATE tasks SET complite = ? WHERE id = ? AND user_id = ?");
+        $stmt->execute([$complite, $id, $userId]);
+    }
+    echo 'OK';
+    exit;
+}
+
+if ($action === 'clear_column') {
+    $column = $_POST['column'] ?? '';
+    if ($userId > 0) {
+        if ($column === 'active') {
+            $stmt = $pdo->prepare("DELETE FROM tasks WHERE user_id = ? AND complite = 0");
+            $stmt->execute([$userId]);
+        } elseif ($column === 'done') {
+            $stmt = $pdo->prepare("DELETE FROM tasks WHERE user_id = ? AND complite = 1");
+            $stmt->execute([$userId]);
+        }
     }
     header('Location: index.php?page=home');
     exit;
