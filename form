@@ -1,0 +1,63 @@
+<?php
+require_once 'data.php';
+
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit;
+}
+
+$userId = $_SESSION['user_id'];
+$action = $_POST['action'] ?? $_GET['action'] ?? '';
+
+try {
+    $pdo = new PDO($dsn, $db_user, $db_password, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+    ]);
+} catch (PDOException $e) {
+    die("Ошибка подключения к БД");
+}
+
+if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $text = trim($_POST['text'] ?? '');
+    if ($text !== '' && $userId > 0) {
+        $stmt = $pdo->prepare("INSERT INTO tasks (user_id, text, complite) VALUES (?, ?, 0)");
+        $stmt->execute([$userId, $text]);
+    }
+    header('Location: index.php?page=home');
+    exit;
+}
+
+if ($action === 'edit' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $id = (int)($_POST['id'] ?? 0);
+    $text = trim($_POST['text'] ?? '');
+    if ($id > 0 && $text !== '' && $userId > 0) {
+        $stmt = $pdo->prepare("UPDATE tasks SET text = ? WHERE id = ? AND user_id = ?");
+        $stmt->execute([$text, $id, $userId]);
+    }
+    header('Location: index.php?page=home');
+    exit;
+}
+
+if ($action === 'delete') {
+    $id = (int)($_GET['id'] ?? $_POST['id'] ?? 0);
+    if ($id > 0 && $userId > 0) {
+        $stmt = $pdo->prepare("DELETE FROM tasks WHERE id = ? AND user_id = ?");
+        $stmt->execute([$id, $userId]);
+    }
+    header('Location: index.php?page=home');
+    exit;
+}
+
+if ($action === 'toggle') {
+    $id = (int)($_POST['id'] ?? 0);
+    if ($id > 0 && $userId > 0) {
+        $stmt = $pdo->prepare("UPDATE tasks SET complite = NOT complite WHERE id = ? AND user_id = ?");
+        $stmt->execute([$id, $userId]);
+    }
+    header('Location: index.php?page=home');
+    exit;
+}
+
+header('Location: index.php?page=home');
+exit;
