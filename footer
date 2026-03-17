@@ -1,0 +1,7 @@
+  </main>
+  <footer class="site-footer">
+    <p>&copy; <?= date('Y') ?> TaskManager. Все права защищены (нет).</p>
+  </footer>
+  <script src="code.js"></script>
+</body>
+</html>
