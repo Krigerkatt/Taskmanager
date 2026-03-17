@@ -1,0 +1,67 @@
+<?php
+$pageTitle = 'Регистрация';
+require_once 'header.php';
+require_once 'data.php';
+
+$error = '';
+$success = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = trim($_POST['username'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+    $confirm = $_POST['confirm_password'] ?? '';
+
+    if ($username && $email && $password) {
+        if ($password !== $confirm) {
+            $error = 'Пароли не совпадают';
+        } elseif (strlen($password) < 6) {
+            $error = 'Пароль должен быть не менее 6 символов';
+        } elseif (strlen($username) < 3) {
+            $error = 'Имя пользователя должно быть не менее 3 символов';
+        } else {
+            try {
+                $pdo = new PDO($dsn, $db_user, $db_password, [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+                ]);
+                
+                $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+                $stmt->execute([$email]);
+                if ($stmt->fetch()) {
+                    $error = 'Пользователь с таким email уже существует';
+                } else {
+                    $stmt = $pdo->prepare("INSERT INTO users (username, email, password, avatar, bio) VALUES (?, ?, ?, 'default.png', '')");
+                    $stmt->execute([$username, $email, $password]);
+                    $success = 'Регистрация успешна! <a href="login.php">Войти</a>';
+                }
+            } catch (PDOException $e) {
+                $error = 'Ошибка регистрации';
+            }
+        }
+    } else {
+        $error = 'Заполните все поля';
+    }
+}
+?>
+
+<div class="auth-form">
+  <h2>Регистрация</h2>
+  <?php if ($error): ?>
+    <p class="error"><?= htmlspecialchars($error) ?></p>
+  <?php endif; ?>
+  <?php if ($success): ?>
+    <p class="success"><?= $success ?></p>
+  <?php endif; ?>
+  <form method="POST">
+    <input type="text" name="username" placeholder="Имя пользователя" required 
+           value="<?= htmlspecialchars($_POST['username'] ?? '') ?>">
+    <input type="email" name="email" placeholder="Email" required 
+           value="<?= htmlspecialchars($_POST['email'] ?? '') ?>">
+    <input type="password" name="password" placeholder="Пароль" required>
+    <input type="password" name="confirm_password" placeholder="Подтвердите пароль" required>
+    <button type="submit">Зарегистрироваться</button>
+  </form>
+  <p>Уже есть аккаунт? <a href="login.php">Войти</a></p>
+</div>
+
+<?php require_once 'footer.php'; ?>
