@@ -1,0 +1,702 @@
+/* =========================================
+   БАЗОВЫЕ СТИЛИ
+   ========================================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+  background: #f0f2f5;
+  color: #111;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  text-decoration: none;
+  color: #7546f7;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: #5e36d0;
+}
+
+/* =========================================
+   ШАПКА (HEADER)
+   ========================================= */
+.site-header {
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.site-header nav {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #7546f7;
+}
+
+.logo:hover {
+  color: #5e36d0;
+}
+
+.nav-links {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.nav-links a {
+  padding: 8px 16px;
+  border-radius: 6px;
+  color: #333;
+  font-weight: 500;
+}
+
+.nav-links a:hover {
+  background: #f0f2f5;
+  color: #7546f7;
+}
+
+.btn-login, .btn-register {
+  background: #7546f7;
+  color: #fff !important;
+}
+
+.btn-login:hover, .btn-register:hover {
+  background: #5e36d0;
+}
+
+.btn-logout {
+  background: #dc3545;
+  color: #fff !important;
+  transition: all 0.2s;
+}
+
+.btn-logout:hover {
+  background: #f8f9fa;
+  color: #000 !important;
+  border: 1px solid #dc3545;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px !important;
+  background: #f0f2f5;
+  border-radius: 20px;
+}
+
+.user-profile:hover {
+  background: #e4e6e9;
+}
+
+.avatar-small {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #7546f7;
+}
+
+/* =========================================
+   ОСНОВНОЙ КОНТЕЙНЕР
+   ========================================= */
+.container {
+  flex: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  width: 100%;
+}
+
+/* =========================================
+   ЗАДАЧИ (TASKS)
+   ========================================= */
+main {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  flex-wrap: wrap;
+}
+
+.list_tasks {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.list_tasks:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+}
+
+.list_tasks h2 {
+  text-align: center;
+  margin: 0 0 15px 0;
+  font-size: 18px;
+  color: #333;
+  font-weight: 600;
+}
+
+.list_tasks ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  min-height: 150px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.list_tasks li {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+  background: #fff;
+  margin: 8px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: background 0.2s;
+  max-width: calc(100% - 16px);
+  overflow: hidden;
+}
+
+.list_tasks li:hover {
+  background: #f5f5f5;
+}
+
+.list_tasks li:last-child {
+  margin-bottom: 8px;
+}
+
+.list_tasks li.completed span {
+  text-decoration: line-through;
+  color: #888;
+}
+
+/* Текст задачи — перенос и ограничение */
+.list_tasks li span:first-child {
+  flex-grow: 1;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  max-width: 180px;
+  margin-right: 10px;
+  line-height: 1.4;
+  hyphens: auto;
+}
+
+/* Приоритеты */
+.priority-badge {
+  flex-shrink: 0;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.priority-badge.high { background: #ffebee; color: #c62828; }
+.priority-badge.medium { background: #fff8e1; color: #f57f17; }
+.priority-badge.low { background: #e8f5e9; color: #2e7d32; }
+
+/* Кнопки действий */
+.task-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.btn-edit, .btn-move, .btn-delete {
+  padding: 4px 8px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-edit {
+  background: #17a2b8;
+  color: #fff;
+}
+.btn-edit:hover { background: #138496; }
+
+.btn-move {
+  background: #28a745;
+  color: #fff;
+}
+.btn-move:hover { background: #218838; }
+
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+}
+.btn-delete:hover { background: #c82333; }
+
+/* Общие кнопки */
+.buttons {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+button, .btn {
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  background: #7546f7;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+button:hover, .btn:hover {
+  background: #5e36d0;
+  transform: translateY(-1px);
+}
+
+button:active, .btn:active {
+  transform: translateY(0);
+}
+
+/* =========================================
+   ФОРМЫ (Forms)
+   ========================================= */
+.auth-form {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.auth-form h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+.auth-form input,
+.auth-form textarea {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.auth-form input:focus,
+.auth-form textarea:focus {
+  outline: none;
+  border-color: #7546f7;
+  box-shadow: 0 0 0 3px rgba(117, 70, 247, 0.1);
+}
+
+.auth-form button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+}
+
+.auth-form p {
+  text-align: center;
+  margin-top: 20px;
+  color: #666;
+}
+
+/* Сообщения об ошибках/успехе */
+.error, .success {
+  padding: 12px 15px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.error {
+  background: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+}
+
+.success {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+/* =========================================
+   МОДАЛЬНОЕ ОКНО (Dialog)
+   ========================================= */
+dialog {
+  /* Центрирование по центру экрана */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+  min-width: 300px;
+  max-width: 450px;
+  width: 90%;
+  border-radius: 12px;
+  padding: 25px;
+  border: none;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  margin: 0; /* Убираем стандартные отступы */
+}
+
+dialog::backdrop {
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(2px);
+}
+
+dialog h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+dialog textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+dialog label {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #555;
+}
+
+dialog select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #fff;
+}
+
+dialog .buttons {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+dialog .buttons button:last-child {
+  background: #6c757d;
+}
+dialog .buttons button:last-child:hover {
+  background: #5a6268;
+}
+
+/* =========================================
+   ПРОФИЛЬ (Profile)
+   ========================================= */
+.profile-container {
+  max-width: 650px;
+  margin: 30px auto;
+  padding: 0;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  margin-bottom: 30px;
+  padding: 25px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #7546f7;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.profile-info h2 {
+  text-align: left;
+  margin: 0 0 5px 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.profile-info .email {
+  color: #666;
+  margin: 0 0 8px 0;
+  font-size: 14px;
+}
+
+.profile-info .member-since {
+  color: #888;
+  font-size: 13px;
+  margin: 0;
+}
+
+.profile-section {
+  margin-bottom: 20px;
+  padding: 25px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.profile-section h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  color: #333;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f0f2f5;
+}
+
+.profile-section form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.profile-section input,
+.profile-section textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.profile-section input:focus,
+.profile-section textarea:focus {
+  outline: none;
+  border-color: #7546f7;
+  box-shadow: 0 0 0 3px rgba(117, 70, 247, 0.1);
+}
+
+.profile-section button {
+  align-self: flex-start;
+  padding: 10px 25px;
+}
+
+.profile-section input[type="file"] {
+  padding: 10px 0;
+  border: none;
+}
+
+/* Статистика */
+.stats {
+  display: flex;
+  gap: 20px;
+  justify-content: space-around;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  flex: 1;
+}
+
+.stat-number {
+  display: block;
+  font-size: 28px;
+  font-weight: bold;
+  color: #7546f7;
+  margin-bottom: 5px;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* =========================================
+   ПОДВАЛ (FOOTER)
+   ========================================= */
+.site-footer {
+  background: #fff;
+  border-top: 1px solid #e0e0e0;
+  padding: 20px;
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+  margin-top: auto;
+}
+
+.site-footer p {
+  margin: 0;
+}
+
+/* =========================================
+   СТРАНИЦА 404
+   ========================================= */
+.error-page {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.error-page h1 {
+  font-size: 72px;
+  color: #7546f7;
+  margin-bottom: 10px;
+}
+
+.error-page p {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 25px;
+}
+
+.error-page a {
+  display: inline-block;
+  padding: 12px 30px;
+  background: #7546f7;
+  color: #fff;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.error-page a:hover {
+  background: #5e36d0;
+}
+
+/* =========================================
+   АДАПТИВНОСТЬ (Mobile)
+   ========================================= */
+@media (max-width: 800px) {
+  .site-header nav {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  main {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+  }
+
+  .list_tasks {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .list_tasks li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .list_tasks li span:first-child {
+    max-width: 100%;
+    margin-right: 0;
+    margin-bottom: 8px;
+  }
+
+  .task-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .profile-info h2 {
+    text-align: center;
+  }
+
+  .stats {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  dialog {
+    width: 90%;
+    max-width: none;
+    margin: 20px auto;
+  }
+
+  .auth-form {
+    margin: 20px;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo {
+    font-size: 20px;
+  }
+
+  .nav-links a {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .stat-number {
+    font-size: 24px;
+  }
+}
